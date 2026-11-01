@@ -210,13 +210,20 @@
   }
   .nav__logo { display: flex; align-items: center; flex: none; }
   .nav__logo img { height: 20px; width: auto; display: block; }
-  .nav__links { display: flex; gap: 1.9rem; }
+  .nav__links { display: flex; gap: 1.9rem; position: relative; }
   .nav__links a {
     font-family: "Archivo", sans-serif; font-weight: 600;
     font-size: 0.8rem; letter-spacing: 0.13em; text-transform: uppercase;
     opacity: 0.85; transition: opacity 0.25s;
   }
-  .nav__links a:hover { opacity: 1; }
+  .nav__links a:hover, .nav__links a[aria-current="true"] { opacity: 1; }
+  /* active-section stroke: a 1px bar scaled to the link's width, so only transform animates */
+  .nav__ind {
+    position: absolute; left: 0; bottom: -9px; width: 1px; height: 2px;
+    background: var(--blood); transform-origin: 0 50%; pointer-events: none;
+    opacity: 0; transition: transform 0.45s var(--ease), opacity 0.3s;
+  }
+  @media (prefers-reduced-motion: reduce) { .nav__ind { transition: opacity 0.2s; } }
   .nav__right { display: flex; align-items: center; gap: 1rem; flex: none; }
   .nav .btn { padding: 0.75rem 1.15rem; }
   .nav[data-solid="false"] .btn { background: var(--blood); border-color: var(--blood); color:#fff; }
@@ -722,6 +729,7 @@
     <a href="#classes">Classes</a>
     <a href="#membership">Membership</a>
     <a href="#visit">Visit</a>
+    <span class="nav__ind" id="navInd" aria-hidden="true"></span>
   </div>
   <div class="nav__right">
     <button class="theme-btn" id="theme" aria-label="Toggle light or dark theme">
@@ -1409,6 +1417,40 @@
   var solidify = function () { nav.dataset.solid = (window.scrollY > window.innerHeight * 0.7) ? 'true' : 'false'; };
   solidify();
   window.addEventListener('scroll', solidify, { passive: true });
+
+  /* nav active stroke: follows the section in view, previews on hover */
+  (function () {
+    var ind = document.getElementById('navInd');
+    var links = Array.prototype.slice.call(document.querySelectorAll('.nav__links a'));
+    var targets = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    var active = null, hovered = null, ticking = false;
+    var moveTo = function (a) {
+      if (!a) { ind.style.opacity = '0'; return; }
+      ind.style.transform = 'translateX(' + a.offsetLeft + 'px) scaleX(' + a.offsetWidth + ')';
+      ind.style.opacity = '1';
+    };
+    var spy = function () {
+      ticking = false;
+      var line = window.innerHeight * 0.35, next = null;
+      targets.forEach(function (t, i) { if (t && t.getBoundingClientRect().top <= line) next = links[i]; });
+      var last = targets[targets.length - 1];
+      if (last && last.getBoundingClientRect().bottom < line) next = null; /* past Visit, e.g. final CTA */
+      if (next !== active) {
+        if (active) active.removeAttribute('aria-current');
+        if (next) next.setAttribute('aria-current', 'true');
+        active = next;
+      }
+      if (!hovered) moveTo(active);
+    };
+    links.forEach(function (a) {
+      a.addEventListener('mouseenter', function () { hovered = a; moveTo(a); });
+      a.addEventListener('mouseleave', function () { hovered = null; moveTo(active); });
+    });
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
+    window.addEventListener('resize', spy);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(spy);
+    spy();
+  })();
 
   /* mobile menu */
   var menuBtn = document.getElementById('menuBtn');
