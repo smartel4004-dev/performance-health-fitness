@@ -1456,14 +1456,14 @@
 
   /* 360 tour: click-to-load so Google's viewer doesn't slow the page.
      To change the start angle, replace TOUR_SRC with the src from Maps > Share > "Embed a map". */
-  var TOUR_SRC = 'https://www.google.com/maps/embed?pb=!4v1730000000000!6m8!1m7!1sCIABIhDQODP01gPan3VDruvWHOQy!2m2!1d42.8470247!2d-71.9656919!3f265.27!4f-10!5f0.7820865974627469';
+  var TOUR_SRC = 'https://www.google.com/maps/embed?pb=!4v1793574542781!6m8!1m7!1sCAoSHENJQUJJaERRT0RQMDFnUGFuM1ZEcnV2V0hPUXk.!2m2!1d42.84702465005925!2d-71.96569185096577!3f265.26896979905723!4f-24.660531584935384!5f0.7820865974627469';
   document.getElementById('tourBtn').addEventListener('click', function () {
     var f = document.createElement('iframe');
     f.src = TOUR_SRC;
     f.title = 'Performance Health & Fitness 360 degree virtual tour';
     f.allow = 'fullscreen; accelerometer; gyroscope';
     f.allowFullscreen = true;
-    f.referrerPolicy = 'no-referrer-when-downgrade';
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
     this.replaceWith(f);
   });
   document.getElementById('bookClose').addEventListener('click', closeBook);
