@@ -541,6 +541,18 @@
     font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
   }
   .visit__pin svg { width: 30px; height: 30px; color: var(--blood); }
+  /* real map sits over the placeholder, which stays as the loading state */
+  .visit__map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .visit__dir {
+    position: absolute; right: 12px; bottom: 12px; z-index: 1;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.65rem 0.95rem; min-height: 44px;
+    background: var(--blood); color: #fff;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3); transition: background 0.25s;
+  }
+  .visit__dir:hover { background: var(--blood-deep); }
+  .visit__dir svg { width: 14px; height: 14px; }
 
   .tour { position: relative; aspect-ratio: 16 / 9; margin-bottom: clamp(2rem,4vw,3.5rem); overflow: hidden; background: var(--ink); border: 1px solid var(--hair); }
   @media (max-width: 640px) { .tour { aspect-ratio: 4 / 5; } }
@@ -1209,11 +1221,15 @@
       <p class="tour__bar"><span>Virtual tour via Google Maps. Loads when you tap.</span><a href="https://www.google.com/maps/place/Performance+Health+%26+Fitness/@42.8470247,-71.9656919,3a,75y,265.27h,65.34t/data=!3m7!1e1!3m5!1sCIABIhDQODP01gPan3VDruvWHOQy!2e10!7i5772!8i2886" target="_blank" rel="noopener">Open full screen in Google Maps</a></p>
 
       <div class="visit">
-        <div class="visit__map" aria-hidden="true">
-          <div class="visit__pin">
+        <div class="visit__map">
+          <div class="visit__pin" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-6.5 7-12A7 7 0 0 0 5 10c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
             Map &mdash; 301 Jaffrey Rd
           </div>
+          <iframe src="https://maps.google.com/maps?q=Performance+Health+%26+Fitness,+301+Jaffrey+Rd,+Peterborough,+NH+03458&amp;z=15&amp;output=embed" title="Map to Performance Health &amp; Fitness, 301 Jaffrey Road, Peterborough NH" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <a class="visit__dir" href="https://www.google.com/maps/dir/?api=1&amp;destination=Performance+Health+%26+Fitness,+301+Jaffrey+Rd,+Peterborough,+NH+03458" target="_blank" rel="noopener">Get directions
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
         </div>
 
         <dl class="infolist reveal">
